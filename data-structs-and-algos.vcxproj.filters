@@ -23,5 +23,8 @@
     <ClInclude Include="doubly linked list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lzw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

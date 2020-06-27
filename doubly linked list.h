@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdint.h>
 template <typename T>
 class DoublyLinkedList {
     struct Node {
