@@ -6,13 +6,12 @@
 
 typedef unsigned char byte;
 
-std::vector<byte> encode(const std::vector<byte>& input) {
+void encode(const std::vector<byte>& input) {
     int dictSize = 256;
     std::map<std::vector<byte>&,int> dictionary;
 
 }
 
-void decode() {
-
+void decode(const std::vector<byte>& input) {
+    
 }
-
