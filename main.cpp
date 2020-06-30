@@ -55,7 +55,7 @@ int main(unsigned char argc, ...) {
     } 
     else if(mode == "-encode") { // encode into new file
         std::fstream oldFile(fileName, std::fstream::in | std::fstream::binary);
-        std::vector<byte> data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
+        std::string data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
         oldFile.close;
 
         encode(data);
@@ -63,12 +63,12 @@ int main(unsigned char argc, ...) {
         // load encoded data into new file
         std::string encodedFileName = std::filesystem::path(fileName).filename().string() + ".lzw";
         std::fstream encodedFile(encodedFileName, std::fstream::out | std::fstream::binary);
-        for(const byte &i : data) { encodedFile << i; }
+        for(char& i : data) { encodedFile << i; }
         encodedFile.close;
     } 
     else if(fileName == "-decode" && (std::filesystem::path(fileName).extension().string()==".lzw")) { // decode existing file
         std::fstream oldFile(fileName, std::fstream::in | std::fstream::binary);
-        std::vector<byte> data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
+        std::string data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
         oldFile.close;
 
         decode(data);
@@ -78,7 +78,7 @@ int main(unsigned char argc, ...) {
         + "(uncompressed)"
         + std::filesystem::path(std::filesystem::path(fileName).stem().string()).extension().string();
         std::fstream decodedFile(decodedFileName, std::fstream::out | std::fstream::binary);
-        for(const byte &i : data) { decodedFile << i; }
+        for(char& i : data) { decodedFile << i; }
         decodedFile.close;
     }
     #endif
