@@ -339,3 +339,8 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /kirb.jpg
+/test.txt.lzw
+/test.txt
+/rx78.jpg.lzw
+/rx78.jpg
+/kirb.jpg.lzw

@@ -9,8 +9,7 @@
 
 #include <cstdarg>
 
-int main(unsigned char argc, ...) {
-    va_list args;
+int main(unsigned char argc, char* argv[]) {
     /// Doubly Linked List Test Cases ///
     #if defined(DOUBLY_LINKED_LIST_H)
     DoublyLinkedList<int> list;
@@ -40,46 +39,46 @@ int main(unsigned char argc, ...) {
 
     /// LZW Test Cases ///
     #elif defined(LZW_H)
-    va_start(args, argc);
-    std::string executableName = va_arg(args, const char*);
-    std::string mode = va_arg(args, const char*);
-    std::string fileName = va_arg(args, const char*);
+    std::string mode = argv[1];
+    std::string fileName = argv[2];
     if(argc < 3) {
         std::cout << "Path to executable, -encode or -decode, and file must be given as arguments.\n";
         return 1;
     }
 
-    if((mode != "-encode") || (mode != "-decode")) {
+    if((mode != "-encode") && (mode != "-decode")) {
         std::cout << "Wrong arguments, use -encode or -decode.\n";
         return 1;
     } 
-    else if(mode == "-encode") { // encode into new file
+    else if(mode == "-encode") { // encode with 12-bit LSB into new file
         std::fstream oldFile(fileName, std::fstream::in | std::fstream::binary);
         std::string data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
-        oldFile.close;
+        oldFile.close();
 
-        encode(data);
+        std::vector<unsigned char> me;
+        encode(data, me);
 
         // load encoded data into new file
         std::string encodedFileName = std::filesystem::path(fileName).filename().string() + ".lzw";
-        std::fstream encodedFile(encodedFileName, std::fstream::out | std::fstream::binary);
-        for(char& i : data) { encodedFile << i; }
-        encodedFile.close;
+        std::fstream yourMom(encodedFileName, std::fstream::out | std::fstream::binary);
+        for(unsigned char i : me) { yourMom << i; }
+        yourMom.close();
     } 
-    else if(fileName == "-decode" && (std::filesystem::path(fileName).extension().string()==".lzw")) { // decode existing file
+    else if(mode == "-decode" && (std::filesystem::path(fileName).extension().string()==".lzw")) { // decode existing file
         std::fstream oldFile(fileName, std::fstream::in | std::fstream::binary);
         std::string data((std::istreambuf_iterator<char>(oldFile)), std::istreambuf_iterator<char>());
-        oldFile.close;
+        oldFile.close();
 
-        decode(data);
+        std::vector<unsigned char> unpackedArray;
+        decode(data, unpackedArray);
 
         // put decoded data into new file
         std::string decodedFileName = std::filesystem::path(std::filesystem::path(fileName).stem().string()).stem().string() 
         + "(uncompressed)"
         + std::filesystem::path(std::filesystem::path(fileName).stem().string()).extension().string();
         std::fstream decodedFile(decodedFileName, std::fstream::out | std::fstream::binary);
-        for(char& i : data) { decodedFile << i; }
-        decodedFile.close;
+        for(unsigned char i : unpackedArray) { decodedFile << i; }
+        decodedFile.close();
     }
     #endif
     return 0;
