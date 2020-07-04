@@ -1,6 +1,5 @@
 #include<iostream>
 #include<filesystem>
-#include<string>
 #include<fstream>
 #include<map>
 
@@ -24,11 +23,11 @@ void encode(std::string& input, std::vector<unsigned char>& packedArray) {
         } else {
             if(even) {
                 packedArray.push_back(dictionary[curr] & 0xFF);
-                packedArray.push_back((dictionary[curr] >> 8) & 0xF);
+                packedArray.push_back((dictionary[curr] & 0xF00) >> 8);
                 even = false;
             } else {
-                packedArray.at(packedArray.back()) |= dictionary[curr] << 4;
-                packedArray.push_back(dictionary[curr] & 0xFF0);
+                packedArray.at(packedArray.size()-1) |= ((dictionary[curr] & 0xF) << 4);
+                packedArray.push_back((dictionary[curr] & 0xFF0) >> 4);
                 even = true;
             }
             dictionary[extendedDictionary] = dictSize++;
@@ -39,45 +38,51 @@ void encode(std::string& input, std::vector<unsigned char>& packedArray) {
     if(!curr.empty()) {
         if(even) {
             packedArray.push_back(dictionary[curr] & 0xFF);
-            packedArray.push_back((dictionary[curr] >> 8) & 0xF);
-            even = false;
+            packedArray.push_back((dictionary[curr] & 0xF00 ) >> 8);
         } else {
-            packedArray.at(packedArray.back()) |= dictionary[curr] << 4;
-            packedArray.push_back(dictionary[curr] & 0xFF0);
-            even = true;
+            packedArray.at(packedArray.size()-1) |= ((dictionary[curr] & 0xF) << 4);
+            packedArray.push_back((dictionary[curr] & 0xFF0) >> 4);
         }
     }
 }
 
-// need to redesign for 12-bit LSB
 void decode(std::string& input, std::vector<unsigned char>& unpackedArray) {
     int dictSize = 256;
     std::map<int16_t,std::string> dictionary; // only using 12 bits
     for(int i = 0; i < dictSize; i++) {
         dictionary[i] = std::string(1,i);
     }
-
-    std::string w(1,input.at(0)); // wtf is w
-    std::string decodedString = w;
+    
+    int16_t curr;
+    int16_t next;
     std::string newEntry;
-    int sequences;
     bool even=true;
     for(int i = 1; i < input.size(); i++) {
-        int16_t curr;
         if(even) {
             curr = input.at(i-1) + ((input.at(i) & 0xF) << 8);
+            newEntry = dictionary[curr];
+            // add curr + next to dictionary here, if there is no next, don't add to dictionary
+            if((input.size() - i) > 1) {
+                next = ((input.at(i) & 0xF0) >> 4) + (input.at(i+1) << 4);
+                newEntry += dictionary[next];
+                dictionary[dictSize++] = newEntry;
+            }
             even=false;
         }
         else {
-            curr = ((input.at(i-1) & 0xF0) >> 4) + ((input.at(i) & 0xF) << 8); // fix?
+            curr = ((input.at(i-1) & 0xF0) >> 4) + (input.at(i) << 4);
+            newEntry = dictionary[curr];
+            // ditto for odd
+            if((input.size() - i) > 2) {
+                next = input.at(i+1) + ((input.at(i+2) & 0xF) << 8);
+                newEntry += dictionary[next];
+                dictionary[dictSize++] = newEntry;
+            }
             even=true;
             i++;
         }
 
-        if(dictionary.count(curr)) {
-            newEntry = dictionary[curr];
-        } else if() {
-
-        }
+        for(char character : newEntry)
+            unpackedArray.push_back(character);
     }
 }
