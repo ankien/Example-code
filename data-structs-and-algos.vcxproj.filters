@@ -20,10 +20,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="doubly linked list.h">
+    <ClInclude Include="doubly linked list.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lzw.h">
+    <ClInclude Include="lzw.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multithread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

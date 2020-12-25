@@ -1,10 +1,14 @@
+/* Uncomment to run different tests! */
 //#define DOUBLY_LINKED_LIST_H
-#define LZW_H
+#define MULTITHREAD_H
+//#define LZW_H
 
 #if defined(DOUBLY_LINKED_LIST_H)
-#include "doubly linked list.h"
+#include "doubly linked list.hpp"
+#elif defined(MULTITHREAD_H)
+#include "multithread.hpp"
 #elif defined(LZW_H)
-#include "lzw.h"
+#include "lzw.hpp"
 #endif
 
 #include <cstdarg>
@@ -36,6 +40,19 @@ int main(unsigned char argc, char* argv[]) {
     list.deleteByValue(3,'t');
     list.deleteByValue(8,'t');
     list.printList();
+
+    /// Multithreaded Test Cases ///
+    #elif defined(MULTITHREAD_H)
+    std::thread t1(searchStr,1,"ea");
+    std::thread t2(searchStr,2,"ad");
+    std::thread t3(searchStr,3,"ed");
+    std::thread t4(searchStr,4,"a");
+    std::thread t5(searchStr,5,"tt");
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
 
     /// LZW Test Cases ///
     #elif defined(LZW_H)
