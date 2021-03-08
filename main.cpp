@@ -1,7 +1,8 @@
 /* Uncomment to run different tests! */
 //#define DOUBLY_LINKED_LIST_H
-#define MULTITHREAD_H
+//#define MULTITHREAD_H
 //#define LZW_H
+#define TEMPLATES_H
 
 #if defined(DOUBLY_LINKED_LIST_H)
 #include "doubly linked list.hpp"
@@ -9,6 +10,8 @@
 #include "multithread.hpp"
 #elif defined(LZW_H)
 #include "lzw.hpp"
+#elif defined(TEMPLATES_H)
+#include "templates.hpp"
 #endif
 
 #include <cstdarg>
@@ -97,6 +100,27 @@ int main(unsigned char argc, char* argv[]) {
         for(unsigned char i : unpackedArray) { decodedFile << i; }
         decodedFile.close();
     }
+
+    /// Template Test Cases ///
+    #elif defined(TEMPLATES_H)
+    constexpr auto lut = templatedLUT<1024>();
+
+    uint32_t instruction = 0b0000'0000'0000'0000'0001'0000'0000'0010;
+    lut.container[getLUTIdx(instruction)](instruction);
+    printf("The result of 2+2 is: %X\n",resultRegister);
+    
+    instruction = 0b0000'0000'1100'0001'0000'0000'0100'0000;
+    lut.container[getLUTIdx(instruction)](instruction);
+    printf("The result of 32*64 is: %d\n",resultRegister);
+    
+    instruction = 0b0000'0001'0100'0001'0000'1111'0010'1100;
+    lut.container[getLUTIdx(instruction)](instruction);
+    printf("The result of loading 69420 is: %d\n",resultRegister);
+    
+    instruction = 0b0000'0001'0000'0000'1010'0100'0101'0101;
+    lut.container[getLUTIdx(instruction)](instruction);
+    printf("The result of storing 42069 is: %d\n",memory);
+
     #endif
     return 0;
 }
