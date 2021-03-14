@@ -2,8 +2,6 @@
 #include <cstdint>
 #include <cstdio>
 
-// because MVSC can't handle this much template recursion, use a different compiler for this example
-
 /*
     Made up 32-bit binary instruction format for the purpose of testing template metaprogramming.
     The idea is to compute suboperations of instructions at compile time.
@@ -68,26 +66,33 @@ constexpr void staticFor(Func&& f) {
     staticFor<T, Begin>(static_cast<Func&&>(f), std::make_integer_sequence<T, End - Begin>{});
 }
 
+#define DECODING_OPS(i) switch(i >> 2) {                            \
+                            case 0b0000'0000:                       \
+                            {                                       \
+                                const uint8_t aa = i & 0x3;         \
+                                container[i] = &dataProcessing<aa>; \
+                                break;                              \
+                            }                                       \
+                            case 0b0000'0001:                       \
+                            {                                       \
+                                const uint8_t ld = i & 0x1;         \
+                                container[i] = &dataTransfer<ld>;   \
+                                break;                              \
+                            }                                       \
+                            default:                                \
+                                container[i] = &undefined;          \
+                            }
+
 template<uint16_t indexes>
 struct templatedLUT {
     constexpr templatedLUT() : container() { // since you can't have uninitialized fields in a constexpr function
-        staticFor<uint16_t, 0, 1024>([&](auto i) {
-            switch(i >> 2) {
-                case 0b0000'0000:
-                {
-                    const uint8_t aa = i & 0x3;
-                    container[i] = &dataProcessing<aa>;
-                    break;
-                }
-                case 0b0000'0001:
-                {
-                    const uint8_t ld = i & 0x1;
-                    container[i] = &dataTransfer<ld>;
-                    break;
-                }
-                default:
-                    container[i] = &undefined;
-            }
+        // Since MSVC has a small unchangeable recursion depth (1024?), this staticFor is split into two parts;
+        // it would just be 0 - 1024 on other compilers
+        staticFor<uint16_t, 0, 512>([&](auto i) {
+            DECODING_OPS(i)
+        });
+        staticFor<uint16_t, 512, 1024>([&](auto i) {
+            DECODING_OPS(i)
         });
     }
     void (*container[indexes])(uint32_t); // we only need 8 bits (indexes = 256) to decode a function,
