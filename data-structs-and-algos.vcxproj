@@ -113,8 +113,12 @@
   <ItemGroup>
     <ClInclude Include="doubly linked list.hpp" />
     <ClInclude Include="lzw.hpp" />
+    <ClInclude Include="memory map.hpp" />
     <ClInclude Include="multithread.hpp" />
     <ClInclude Include="templates.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,7 +2,8 @@
 //#define DOUBLY_LINKED_LIST_H
 //#define MULTITHREAD_H
 //#define LZW_H
-#define TEMPLATES_H
+//#define TEMPLATES_H
+#define MEMORY_MAP_H
 
 #if defined(DOUBLY_LINKED_LIST_H)
 #include "doubly linked list.hpp"
@@ -12,6 +13,8 @@
 #include "lzw.hpp"
 #elif defined(TEMPLATES_H)
 #include "templates.hpp"
+#elif defined(MEMORY_MAP_H)
+#include "memory map.hpp"
 #endif
 
 #include <cstdarg>
@@ -120,6 +123,13 @@ int main(unsigned char argc, char* argv[]) {
     instruction = 0b0000'0001'0000'0000'1010'0100'0101'0101;
     lut.container[getLUTIdx(instruction)](instruction);
     printf("The result of storing 42069 is: %d\n",memory);
+
+    #elif defined(MEMORY_MAP_H)
+
+    char* file = reinterpret_cast<char*>(mappedFile("test.txt"));
+    file[1] = 'a';
+    file[7] = 'u';
+    file[12] = '!';
 
     #endif
     return 0;
