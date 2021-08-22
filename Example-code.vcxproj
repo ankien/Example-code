@@ -108,10 +108,12 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="global object.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doubly linked list.hpp" />
+    <ClInclude Include="global object.hpp" />
     <ClInclude Include="lzw.hpp" />
     <ClInclude Include="memory map.hpp" />
     <ClInclude Include="multithread.hpp" />

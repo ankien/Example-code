@@ -3,7 +3,8 @@
 //#define MULTITHREAD_H
 //#define LZW_H
 //#define TEMPLATES_H
-#define MEMORY_MAP_H
+//#define MEMORY_MAP_H
+#define GLOBAL_OBJECT_H
 
 #if defined(DOUBLY_LINKED_LIST_H)
 #include "doubly linked list.hpp"
@@ -15,6 +16,8 @@
 #include "templates.hpp"
 #elif defined(MEMORY_MAP_H)
 #include "memory map.hpp"
+#elif defined(GLOBAL_OBJECT_H)
+#include "global object.hpp"
 #endif
 
 #include <cstdarg>
@@ -130,6 +133,11 @@ int main(unsigned char argc, char* argv[]) {
     file[1] = 'a';
     file[7] = 'u';
     file[12] = '!';
+
+    #elif defined(GLOBAL_OBJECT_H)
+    std::cout << a.num1 << a.num2 << '\n' << a.stringy << '\n';
+    a.funky();
+    std::cout << a.num1 << a.num2 << '\n' << a.stringy << '\n';
 
     #endif
     return 0;
